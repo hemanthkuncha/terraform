@@ -45,7 +45,7 @@ variable "ec2_tag" {
 
 variable "vpc_tag" {
   description = "VPC Name tag based on workspace"
-  type = map(string)
+  type        = map(string)
 
   default = {
     default = "default-vpc"
@@ -53,4 +53,9 @@ variable "vpc_tag" {
     test    = "test-vpc"
     prod    = "prod-vpc"
   }
+}
+
+variable "availability_zones" {
+  type    = list(string)
+  default = ["ap-south-1a", "ap-south-1b"]
 }
