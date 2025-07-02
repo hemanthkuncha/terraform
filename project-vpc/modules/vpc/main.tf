@@ -18,3 +18,71 @@ resource "aws_subnet" "public" {
     Name = "public-subnet-${count.index + 1}"
   }
 }
+<<<<<<< HEAD
+=======
+
+resource "aws_internet_gateway" "this" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "my-igw"
+  }
+}
+
+data "aws_vpc" "this" {
+  id = aws_vpc.this.id
+}
+
+data "aws_route_table" "main" {
+  route_table_id = data.aws_vpc.this.main_route_table_id
+}
+
+resource "aws_ec2_tag" "tag_default_route_table" {
+  resource_id = data.aws_route_table.main.id
+  key         = "Name"
+  value       = "DO-NOT-USE-default-rt"
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.this.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.this.id
+  }
+
+  tags = {
+    Name = "public-rt"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  count          = length(var.public_subnet_cidrs)
+  subnet_id      = aws_subnet.public[count.index].id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_security_group" "allow_all" {
+  name        = "allow_all"
+  description = "Allow all inbound and outbound traffic"
+  vpc_id      = aws_vpc.this.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_all"
+  }
+}
+>>>>>>> 2e310a8 (Initial commit)
