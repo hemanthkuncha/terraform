@@ -18,8 +18,6 @@ resource "aws_subnet" "public" {
     Name = "public-subnet-${count.index + 1}"
   }
 }
-<<<<<<< HEAD
-=======
 
 resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
@@ -85,4 +83,3 @@ resource "aws_security_group" "allow_all" {
     Name = "allow_all"
   }
 }
->>>>>>> 2e310a8 (Initial commit)
